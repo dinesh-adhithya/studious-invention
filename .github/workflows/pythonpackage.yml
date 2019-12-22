@@ -1,0 +1,54 @@
+import math 
+import numpy as np
+def poisson(goal,exp):
+        ret_num=(exp**goal)
+        ret_den=float((2.71**exp)*math.factorial(goal))
+        print(ret_num,ret_den)
+        return(float((ret_num/ret_den)))
+file1=open("away.txt","r+")
+x=file1.readlines()
+file1.close()
+away="Lei"
+home="Nor"
+avg_for_a=0
+avg_aga_a=0
+sco_exp_a=0
+con_exp_a=0 
+away_goals=0
+for i in range(0,20):
+    y=x[i].split("\t")
+    avg_for_a+=float(y[1])/20.0
+    avg_aga_a+=float(y[2])/20.0
+    if (y[0].rstrip(" ")==away):
+        sco_exp_a=float(y[1])
+        con_exp_a=float(y[2])
+        away_goals=float(y[1])
+avg_for_h=0
+avg_aga_h=0
+sco_exp_h=0
+con_exp_h=0
+home_goals=0
+file2=open("home.txt","r+")
+x=file2.readlines()
+file2.close()
+for i in range(0,20):
+    y=x[i].split("\t")
+    avg_for_h+=float(y[1])/20.0
+    avg_aga_h+=float(y[2].rstrip("\n"))/20.0
+    if y[0]==home:
+        sco_exp_h=float(y[1])
+        con_exp_h=float(y[2].rstrip("\n"))
+        home_goals=float(y[1])
+sco_exp_h=sco_exp_h/avg_for_h
+con_exp_h=con_exp_h/avg_aga_h
+sco_exp_a=sco_exp_a/avg_for_a
+con_exp_a=con_exp_a/avg_aga_a
+print(avg_for_a,avg_aga_a,sco_exp_a,con_exp_a,away_goals)
+print(avg_for_h,avg_aga_h,sco_exp_h,con_exp_h,home_goals)
+prob=np.zeros((10,10))
+home_goal_expect=float(sco_exp_h*con_exp_a*home_goals)
+away_goal_expect=float(sco_exp_a*con_exp_h*away_goals)
+for m in range(0,10):
+            for o in range(0,10):
+                prob[m][o]=float(poisson(m,home_goal_expect)*poisson(o,away_goal_expect))
+                print("the probability of score:",m,o,"-",prob[m][o]*100)
